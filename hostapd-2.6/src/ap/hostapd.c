@@ -45,7 +45,9 @@
 #include "ndisc_snoop.h"
 #include "neighbor_db.h"
 #include "rrm.h"
-
+#ifdef CONFIG_KARMA_ATTACK
+#include "karma_handlers.h"
+#endif
 
 static int hostapd_flush_old_stations(struct hostapd_data *hapd, u16 reason);
 static int hostapd_setup_encryption(char *iface, struct hostapd_data *hapd);
@@ -495,6 +497,9 @@ static int hostapd_flush_old_stations(struct hostapd_data *hapd, u16 reason)
 
 static void hostapd_bss_deinit_no_free(struct hostapd_data *hapd)
 {
+#ifdef CONFIG_KARMA_ATTACK
+    free_all_karma_data(hapd);
+#endif
 	hostapd_free_stas(hapd);
 	hostapd_flush_old_stations(hapd, WLAN_REASON_DEAUTH_LEAVING);
 	hostapd_clear_wep(hapd);
